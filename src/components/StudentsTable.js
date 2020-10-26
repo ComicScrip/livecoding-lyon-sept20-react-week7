@@ -1,12 +1,12 @@
 import React from 'react';
+import { sortBy } from 'lodash';
+import Switch from '@material-ui/core/Switch';
 import students, {
   getAvatarUrl,
   getFullName,
   getGitHubAccountUrl,
   persistAll,
 } from '../data/students';
-import { sortBy } from 'lodash';
-import Switch from '@material-ui/core/Switch';
 
 const StudentsTableRow = ({
   firstName,
@@ -20,11 +20,11 @@ const StudentsTableRow = ({
   return (
     <tr>
       <td>
-        <a href={gitHubAccountUrl} target='_blank' rel='noopener noreferrer'>
+        <a href={gitHubAccountUrl} target="_blank" rel="noopener noreferrer">
           <img
-            className='avatar'
+            className="avatar"
             src={avatarUrl}
-            alt={fullName + "'s Github avatar"}
+            alt={`${fullName}'s Github avatar`}
           />
         </a>
       </td>
@@ -36,7 +36,7 @@ const StudentsTableRow = ({
         <Switch
           checked={firstTrainerMeetingDone}
           onChange={handleTrainerMeetingDoneToogle}
-          color='primary'
+          color="primary"
           inputProps={{ 'aria-label': 'primary checkbox' }}
         />
       </td>
@@ -45,17 +45,19 @@ const StudentsTableRow = ({
 };
 
 const SortButton = ({ fieldToSortBy, sortOrder, activeSort, onClick }) => {
-  const fieldToSortByWithOrder = fieldToSortBy + ' ' + sortOrder;
+  const fieldToSortByWithOrder = `${fieldToSortBy} ${sortOrder}`;
+  const handleClick = () => {
+    onClick(fieldToSortByWithOrder);
+  };
   return (
     <span
-      className={
-        'sort-button' + (activeSort === fieldToSortByWithOrder ? ' active' : '')
-      }
-      onClick={() => {
-        onClick(fieldToSortByWithOrder);
-      }}
+      className={`sort-button${
+        activeSort === fieldToSortByWithOrder ? ' active' : ''
+      }`}
+      onClick={handleClick}
+      aria-hidden="true"
     >
-      <i className={'fas fa-arrow-' + (sortOrder === 'DESC' ? 'up' : 'down')} />
+      <i className={`fas fa-arrow-${sortOrder === 'DESC' ? 'up' : 'down'}`} />
     </span>
   );
 };
@@ -67,11 +69,11 @@ class StudentsTable extends React.Component {
       activeSort: null,
       sortedStudents: students,
     };
-    this.handleSortButtonClicked = this.handleSortButtonClicked.bind(this);
   }
 
-  handleSortButtonClicked(fieldToSortByWithOrder) {
-    if (this.state.activeSort === fieldToSortByWithOrder) {
+  handleSortButtonClicked = (fieldToSortByWithOrder) => {
+    const { activeSort } = this.state;
+    if (activeSort === fieldToSortByWithOrder) {
       this.setState({ sortedStudents: students, activeSort: null });
     } else {
       const [fieldToSortBy, sortOrder] = fieldToSortByWithOrder.split(' ');
@@ -81,7 +83,7 @@ class StudentsTable extends React.Component {
       }
       this.setState({ sortedStudents, activeSort: fieldToSortByWithOrder });
     }
-  }
+  };
 
   handleTrainerMeetingDoneToogle = (githubUserName) => {
     this.setState(
@@ -96,7 +98,8 @@ class StudentsTable extends React.Component {
         ),
       }),
       () => {
-        persistAll(this.state.sortedStudents);
+        const { sortedStudents } = this.state;
+        persistAll(sortedStudents);
       }
     );
   };
@@ -112,16 +115,16 @@ class StudentsTable extends React.Component {
             <td>Avatar</td>
             <td>
               Prénom
-              <span className='col-sort-buttons-container'>
+              <span className="col-sort-buttons-container">
                 <SortButton
-                  fieldToSortBy='firstName'
-                  sortOrder='ASC'
+                  fieldToSortBy="firstName"
+                  sortOrder="ASC"
                   onClick={this.handleSortButtonClicked}
                   activeSort={activeSort}
                 />
                 <SortButton
-                  fieldToSortBy='firstName'
-                  sortOrder='DESC'
+                  fieldToSortBy="firstName"
+                  sortOrder="DESC"
                   onClick={this.handleSortButtonClicked}
                   activeSort={activeSort}
                 />
@@ -129,16 +132,16 @@ class StudentsTable extends React.Component {
             </td>
             <td>
               Nom
-              <span className='col-sort-buttons-container'>
+              <span className="col-sort-buttons-container">
                 <SortButton
-                  fieldToSortBy='lastName'
-                  sortOrder='ASC'
+                  fieldToSortBy="lastName"
+                  sortOrder="ASC"
                   onClick={this.handleSortButtonClicked}
                   activeSort={activeSort}
                 />
                 <SortButton
-                  fieldToSortBy='lastName'
-                  sortOrder='DESC'
+                  fieldToSortBy="lastName"
+                  sortOrder="DESC"
                   onClick={this.handleSortButtonClicked}
                   activeSort={activeSort}
                 />

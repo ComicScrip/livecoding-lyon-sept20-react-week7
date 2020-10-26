@@ -162,7 +162,6 @@ export const persistAll = (students) => {
 };
 
 const studentsFromStorage = JSON.parse(localStorage.getItem('students'));
-console.log(studentsFromStorage);
 const students = studentsFromStorage || studentsRawData;
 
 export default students;
