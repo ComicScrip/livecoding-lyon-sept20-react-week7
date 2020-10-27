@@ -1,7 +1,9 @@
 import React from 'react';
 import { sortBy } from 'lodash';
 import Switch from '@material-ui/core/Switch';
-import students, {
+import axios from 'axios';
+
+import {
   getAvatarUrl,
   getFullName,
   getGitHubAccountUrl,
@@ -67,17 +69,44 @@ class StudentsTable extends React.Component {
     super(props);
     this.state = {
       activeSort: null,
-      sortedStudents: students,
+      sortedStudents: [],
+      initialStudentList: [],
+      loadingStudents: false,
+      loadingError: null,
     };
   }
 
+  componentDidMount() {
+    const studentsFromStorage = JSON.parse(localStorage.getItem('students'));
+    if (studentsFromStorage) {
+      this.setState({ sortedStudents: studentsFromStorage });
+    } else {
+      this.setState({ loadingStudents: true });
+      axios
+        .get('http://localhost:8080/students')
+        .then((res) =>
+          this.setState({
+            loadingError: null,
+            loadingStudents: false,
+            sortedStudents: res.data,
+          })
+        )
+        .catch(() => {
+          this.setState({
+            loadingError:
+              "Une erreur est survenue durant le chargement des élèves depuis l'API",
+          });
+        });
+    }
+  }
+
   handleSortButtonClicked = (fieldToSortByWithOrder) => {
-    const { activeSort } = this.state;
+    const { activeSort, initialStudentList } = this.state;
     if (activeSort === fieldToSortByWithOrder) {
-      this.setState({ sortedStudents: students, activeSort: null });
+      this.setState({ sortedStudents: initialStudentList, activeSort: null });
     } else {
       const [fieldToSortBy, sortOrder] = fieldToSortByWithOrder.split(' ');
-      let sortedStudents = sortBy(students, fieldToSortBy);
+      let sortedStudents = sortBy(initialStudentList, fieldToSortBy);
       if (sortOrder === 'DESC') {
         sortedStudents = sortedStudents.reverse();
       }
@@ -105,8 +134,16 @@ class StudentsTable extends React.Component {
   };
 
   render() {
-    const { sortedStudents, activeSort } = this.state;
+    const {
+      sortedStudents,
+      activeSort,
+      loadingStudents,
+      loadingError,
+    } = this.state;
     const { handleTrainerMeetingDoneToogle } = this;
+
+    if (loadingError) return <p className="error">{loadingError}</p>;
+    if (loadingStudents) return <p>loading students from API</p>;
 
     return (
       <table>

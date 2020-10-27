@@ -193,3 +193,7 @@ td a {
 .col-sort-buttons-container .sort-button.active {
   opacity: 1;
 }
+
+.error {
+  color: red;
+}

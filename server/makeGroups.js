@@ -26,14 +26,15 @@ for (let i = 0; i < students.length; i += 1) {
 }
 
 for (let i = 0; i < groups.length; i += 1) {
-  console.log(chalk.underline(chalk.blue(`Group n° ${i + 1}\n`)));
+  console.log(chalk.underline(chalk.blue(`Group n° ${i + 1}\n`))); // eslint-disable-line
   for (let j = 0; j < groups[i].length; j += 1) {
     const currentStudent = groups[i][j];
+    // eslint-disable-next-line
     console.log(
       `${currentStudent.firstName} ${currentStudent.lastName
         .slice(0, 1)
         .toUpperCase()}`
     );
   }
-  console.log('\n');
+  console.log('\n'); // eslint-disable-line
 }

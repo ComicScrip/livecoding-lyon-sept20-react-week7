@@ -23,4 +23,4 @@ for (let i = 0; i < studentLines.length; i += 1) {
 }
 
 fs.writeFileSync('cleanedStudents.json', JSON.stringify(cleanedStudentEntries));
-console.log('Done !');
+console.log('Done !'); // eslint-disable-line
